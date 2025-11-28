@@ -104,13 +104,9 @@ body {
 }
 
 .menu {
-  position: absolute;
-  top: 14rem;
-  left: 4rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  z-index: 100;
 }
 
 .menu-item {

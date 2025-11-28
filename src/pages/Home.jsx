@@ -12,9 +12,8 @@ function Home() {
         <header className="header">
           <h1 className="title">ElectroQuest</h1>
           <p className="subtitle">Kuasai Seni Elektronika</p>
+          <Menu />
         </header>
-
-        <Menu />
 
         <footer className="footer">
           <p className="credit">by semesta</p>
