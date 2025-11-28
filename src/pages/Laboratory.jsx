@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import { generateExperiment, calculateXP } from '../services/n8nService'
 import useAudio from '../hooks/useAudio'
+import Background from '../components/Background'
 import '../styles/laboratory.css'
 
 function Laboratory() {
@@ -46,6 +47,7 @@ function Laboratory() {
   if (loading) {
     return (
       <div className="laboratory-container">
+        <Background />
         <div className="laboratory-content">
           <div className="loading-section">
             <div className="loading-spinner"></div>
@@ -60,6 +62,7 @@ function Laboratory() {
   if (error) {
     return (
       <div className="laboratory-container">
+        <Background />
         <div className="laboratory-content">
           <button onClick={handleBack} className="back-button" onMouseEnter={playHoverSound}>
             ← Kembali
@@ -79,6 +82,7 @@ function Laboratory() {
 
   return (
     <div className="laboratory-container">
+      <Background />
       <div className="laboratory-content">
         <button onClick={handleBack} className="back-button" onMouseEnter={playHoverSound}>
           ← Kembali
@@ -130,6 +134,10 @@ function Laboratory() {
             <span>Base XP: {experiment.base_xp}</span>
           </div>
         </div>
+
+        <footer className="footer">
+          <p className="credit">by semesta</p>
+        </footer>
       </div>
     </div>
   )

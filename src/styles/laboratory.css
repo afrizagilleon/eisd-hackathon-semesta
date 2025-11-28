@@ -1,12 +1,26 @@
 .laboratory-container {
-  min-height: 100vh;
-  background: linear-gradient(to bottom, #0a0e1a 0%, #0f1621 40%, #1a2332 70%, #1e2a3a 100%);
-  padding: 2rem;
+  height: 100vh;
+  overflow: hidden;
+  padding: 0;
+  position: relative;
 }
 
 .laboratory-content {
   max-width: 1200px;
   margin: 0 auto;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 100;
+  overflow-y: auto;
+  scrollbar-width: none;
+  padding: 1rem;
+  padding-bottom: 4rem;
+}
+
+.laboratory-content::-webkit-scrollbar {
+  display: none;
 }
 
 .loading-section,
@@ -235,4 +249,18 @@
 
 .xp-icon {
   font-size: 1.8rem;
+}
+
+.footer {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 101;
+  pointer-events: none;
+}
+
+.credit {
+  color: rgba(203, 213, 225, 0.6);
+  font-size: 0.9rem;
+  font-family: 'Patrick Hand', cursive;
 }
