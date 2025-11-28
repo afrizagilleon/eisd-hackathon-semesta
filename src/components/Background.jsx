@@ -112,16 +112,16 @@ function Background() {
   }, [])
 
   return (
-    <>
+    <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', zIndex: 1, pointerEvents: 'none' }}>
       <div className="fog-layer fog-1"></div>
       <div className="fog-layer fog-2"></div>
       <div className="fog-layer fog-3"></div>
 
-      <div className="scene" ref={sceneRef}>
+      <div className="scene" ref={sceneRef} style={{ position: 'relative', width: '100%', height: '100%' }}>
         <div className="particles"></div>
         <div className="moon" ref={moonRef}></div>
       </div>
-    </>
+    </div>
   )
 }
 
