@@ -1,0 +1,124 @@
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(to bottom, #0a0e1a 0%, #0f1621 40%, #1a2332 70%, #1e2a3a 100%);
+  padding: 2rem;
+}
+
+.auth-card {
+  background: rgba(26, 35, 50, 0.8);
+  border: 2px solid rgba(251, 191, 36, 0.3);
+  border-radius: 16px;
+  padding: 3rem;
+  max-width: 450px;
+  width: 100%;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4),
+              0 0 40px rgba(251, 191, 36, 0.1);
+}
+
+.auth-title {
+  font-size: 3rem;
+  text-align: center;
+  color: #fbbf24;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+}
+
+.auth-subtitle {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #cbd5e1;
+  margin-bottom: 2rem;
+}
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.form-group label {
+  font-size: 1rem;
+  color: #e2e8f0;
+}
+
+.form-group input {
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-family: 'Patrick Hand', cursive;
+  background: rgba(15, 22, 33, 0.6);
+  border: 2px solid rgba(251, 191, 36, 0.2);
+  border-radius: 8px;
+  color: #ffffff;
+  transition: all 0.3s ease;
+}
+
+.form-group input:focus {
+  outline: none;
+  border-color: #fbbf24;
+  box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
+}
+
+.auth-error {
+  background: rgba(248, 113, 113, 0.2);
+  border: 1px solid #f87171;
+  border-radius: 8px;
+  padding: 0.75rem;
+  color: #fecaca;
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.auth-button {
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-family: 'Patrick Hand', cursive;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  border: none;
+  border-radius: 8px;
+  color: #0f1621;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 15px rgba(251, 191, 36, 0.3);
+}
+
+.auth-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.5);
+}
+
+.auth-button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.auth-toggle {
+  text-align: center;
+  margin-top: 1rem;
+  color: #cbd5e1;
+}
+
+.toggle-link {
+  background: none;
+  border: none;
+  color: #fbbf24;
+  font-family: 'Patrick Hand', cursive;
+  font-size: 1rem;
+  cursor: pointer;
+  text-decoration: underline;
+  transition: color 0.3s ease;
+}
+
+.toggle-link:hover {
+  color: #f59e0b;
+}

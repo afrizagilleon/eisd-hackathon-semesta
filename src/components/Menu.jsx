@@ -1,16 +1,17 @@
+import { useNavigate } from 'react-router-dom'
 import useAudio from '../hooks/useAudio'
 
 function Menu() {
   const { playClickSound, playHoverSound } = useAudio()
+  const navigate = useNavigate()
 
   const menuItems = [
-    { id: 'learn', label: 'Begin Your Journey', href: '#learn' },
-    { id: 'components', label: 'Component Library', href: '#components' },
-    { id: 'projects', label: 'Quest Projects', href: '#projects' },
-    { id: 'community', label: 'Join the Guild', href: '#community' }
+    { id: 'play', label: 'Main', path: '/play' },
+    { id: 'profile', label: 'Profil', path: '/profile' },
+    { id: 'settings', label: 'Pengaturan', path: '/settings' }
   ]
 
-  const handleClick = (e, target) => {
+  const handleClick = (e, item) => {
     e.preventDefault()
     playClickSound()
 
@@ -20,9 +21,8 @@ function Menu() {
     setTimeout(() => {
       e.currentTarget.style.color = ''
       e.currentTarget.style.textShadow = ''
+      navigate(item.path)
     }, 200)
-
-    console.log(`Navigating to: ${target}`)
   }
 
   const handleMouseEnter = () => {
@@ -34,9 +34,9 @@ function Menu() {
       {menuItems.map(item => (
         <a
           key={item.id}
-          href={item.href}
+          href={item.path}
           className="menu-item"
-          onClick={(e) => handleClick(e, item.id)}
+          onClick={(e) => handleClick(e, item)}
           onMouseEnter={handleMouseEnter}
         >
           {item.label}

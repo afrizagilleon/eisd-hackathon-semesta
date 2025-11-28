@@ -1,0 +1,106 @@
+.difficulty-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #0a0e1a 0%, #0f1621 40%, #1a2332 70%, #1e2a3a 100%);
+  padding: 2rem;
+}
+
+.difficulty-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.difficulty-header {
+  text-align: center;
+  margin: 2rem 0 3rem 0;
+}
+
+.difficulty-title {
+  font-size: 3rem;
+  color: #fbbf24;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+}
+
+.difficulty-subtitle {
+  font-size: 1.5rem;
+  color: #cbd5e1;
+}
+
+.difficulties-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+}
+
+.difficulty-card {
+  background: rgba(26, 35, 50, 0.8);
+  border: 3px solid rgba(251, 191, 36, 0.3);
+  border-radius: 16px;
+  padding: 2.5rem;
+  cursor: pointer;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.difficulty-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 6px;
+  background: var(--difficulty-color, #fbbf24);
+  box-shadow: 0 0 20px var(--difficulty-color, #fbbf24);
+  transition: height 0.4s ease;
+}
+
+.difficulty-card:hover::before {
+  height: 100%;
+  opacity: 0.1;
+}
+
+.difficulty-card:hover {
+  transform: translateY(-15px) scale(1.05);
+  border-color: var(--difficulty-color, #fbbf24);
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.5),
+              0 0 60px var(--difficulty-color, rgba(251, 191, 36, 0.4));
+}
+
+.difficulty-icon {
+  font-size: 5rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  transition: transform 0.4s ease;
+}
+
+.difficulty-card:hover .difficulty-icon {
+  transform: scale(1.2) rotate(5deg);
+}
+
+.difficulty-card-title {
+  font-size: 2.2rem;
+  color: var(--difficulty-color, #fbbf24);
+  text-align: center;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 10px var(--difficulty-color, rgba(251, 191, 36, 0.3));
+}
+
+.difficulty-description {
+  font-size: 1.1rem;
+  color: #cbd5e1;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  line-height: 1.7;
+}
+
+.difficulty-multiplier {
+  font-size: 1.3rem;
+  color: var(--difficulty-color, #fbbf24);
+  text-align: center;
+  font-weight: bold;
+  padding: 0.75rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  border: 2px solid var(--difficulty-color, #fbbf24);
+}

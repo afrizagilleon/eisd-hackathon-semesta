@@ -1,0 +1,238 @@
+.laboratory-container {
+  min-height: 100vh;
+  background: linear-gradient(to bottom, #0a0e1a 0%, #0f1621 40%, #1a2332 70%, #1e2a3a 100%);
+  padding: 2rem;
+}
+
+.laboratory-content {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.loading-section,
+.error-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 60vh;
+  text-align: center;
+}
+
+.loading-spinner {
+  width: 80px;
+  height: 80px;
+  border: 6px solid rgba(251, 191, 36, 0.2);
+  border-top-color: #fbbf24;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 2rem;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.loading-text {
+  font-size: 2rem;
+  color: #fbbf24;
+  margin-bottom: 0.5rem;
+}
+
+.loading-subtext {
+  font-size: 1.2rem;
+  color: #cbd5e1;
+}
+
+.error-icon {
+  font-size: 5rem;
+  margin-bottom: 1rem;
+}
+
+.error-title {
+  font-size: 2.5rem;
+  color: #f87171;
+  margin-bottom: 1rem;
+}
+
+.error-message {
+  font-size: 1.3rem;
+  color: #cbd5e1;
+  margin-bottom: 2rem;
+}
+
+.retry-button {
+  padding: 1rem 2rem;
+  font-size: 1.2rem;
+  font-family: 'Patrick Hand', cursive;
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  border: none;
+  border-radius: 8px;
+  color: #0f1621;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.retry-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(251, 191, 36, 0.5);
+}
+
+.daily-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.2), rgba(245, 158, 11, 0.2));
+  border: 2px solid #fbbf24;
+  border-radius: 8px;
+  padding: 0.75rem 1.5rem;
+  margin-bottom: 1.5rem;
+  font-size: 1.2rem;
+  color: #fbbf24;
+  font-weight: bold;
+}
+
+.daily-icon {
+  font-size: 1.5rem;
+}
+
+.experiment-info {
+  background: rgba(26, 35, 50, 0.8);
+  border: 2px solid rgba(251, 191, 36, 0.3);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.experiment-title {
+  font-size: 2.5rem;
+  color: #fbbf24;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  text-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+}
+
+.scenario-box {
+  background: rgba(15, 22, 33, 0.6);
+  border-left: 4px solid #60a5fa;
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.scenario-text {
+  font-size: 1.3rem;
+  color: #e2e8f0;
+  line-height: 1.8;
+  font-style: italic;
+}
+
+.objective-box {
+  background: rgba(52, 211, 153, 0.1);
+  border: 2px solid #34d399;
+  border-radius: 8px;
+  padding: 1rem 1.5rem;
+  font-size: 1.2rem;
+  color: #6ee7b7;
+}
+
+.workbench-section {
+  background: rgba(26, 35, 50, 0.8);
+  border: 2px solid rgba(251, 191, 36, 0.3);
+  border-radius: 16px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+}
+
+.section-title {
+  font-size: 2rem;
+  color: #fbbf24;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.workbench-placeholder {
+  min-height: 400px;
+  background: rgba(15, 22, 33, 0.6);
+  border: 3px dashed rgba(251, 191, 36, 0.3);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+}
+
+.placeholder-text {
+  font-size: 1.5rem;
+  color: #cbd5e1;
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.components-preview {
+  background: rgba(26, 35, 50, 0.8);
+  border: 2px solid rgba(251, 191, 36, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 100%;
+  max-width: 400px;
+}
+
+.components-preview h3 {
+  color: #fbbf24;
+  margin-bottom: 1rem;
+  text-align: center;
+  font-size: 1.3rem;
+}
+
+.components-preview ul {
+  list-style: none;
+  padding: 0;
+}
+
+.components-preview li {
+  color: #cbd5e1;
+  padding: 0.5rem;
+  font-size: 1.1rem;
+  border-bottom: 1px solid rgba(251, 191, 36, 0.1);
+}
+
+.components-preview li:last-child {
+  border-bottom: none;
+}
+
+.experiment-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(26, 35, 50, 0.8);
+  border: 2px solid rgba(251, 191, 36, 0.3);
+  border-radius: 16px;
+  padding: 1.5rem;
+}
+
+.hints-section h3 {
+  color: #60a5fa;
+  margin-bottom: 0.5rem;
+  font-size: 1.3rem;
+}
+
+.hint-info {
+  color: #94a3b8;
+  font-size: 0.95rem;
+}
+
+.xp-info {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.3rem;
+  color: #fbbf24;
+  font-weight: bold;
+}
+
+.xp-icon {
+  font-size: 1.8rem;
+}
