@@ -16,7 +16,7 @@ function Play() {
   const topics = [
     {
       id: 'components',
-      title: 'Kodeks Unsur',
+      title: 'Unsur Kodeks',
       description: 'Pelajari komponen dasar elektronika seperti resistor, capacitor, dan lainnya',
       icon: '⚡',
       color: '#fbbf24'
