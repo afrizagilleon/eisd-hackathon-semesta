@@ -56,10 +56,37 @@ createParticles();
 // Menu item interactions
 const menuItems = document.querySelectorAll('.menu-item');
 
+// Get sound elements
+const clickSound = document.getElementById('click-sound');
+const hoverSound = document.getElementById('hover-sound');
+
+// Set sound volumes
+clickSound.volume = 0.5;
+hoverSound.volume = 0.3;
+
+// Play sound helper functions
+function playClickSound() {
+  clickSound.currentTime = 0;
+  clickSound.play().catch(e => console.log('Click sound failed:', e));
+}
+
+function playHoverSound() {
+  hoverSound.currentTime = 0;
+  hoverSound.play().catch(e => console.log('Hover sound failed:', e));
+}
+
 menuItems.forEach(item => {
+  // Add hover sound effect
+  item.addEventListener('mouseenter', () => {
+    playHoverSound();
+  });
+
   item.addEventListener('click', (e) => {
     e.preventDefault();
     const target = item.getAttribute('href').substring(1);
+
+    // Play click sound
+    playClickSound();
 
     // Add a subtle flash effect
     item.style.color = '#fbbf24';
@@ -106,25 +133,22 @@ windows.forEach((window, index) => {
   }, 1000 + index * 500);
 });
 
-// Audio control (when audio file is added)
-const audio = document.getElementById('ambient-music');
+// Background music control
+const ambientMusic = document.getElementById('ambient-music');
+ambientMusic.volume = 0.3;
 
-// Uncomment when audio file is added:
-// audio.volume = 0.3;
-// audio.play().catch(e => {
-//   console.log('Audio autoplay prevented. User interaction required.');
-//   // Add a play button or wait for user interaction
-// });
-
-// Optional: Add click anywhere to start audio
+// Start background music on first user interaction
 let audioStarted = false;
-document.addEventListener('click', () => {
-  if (!audioStarted && audio.src) {
-    audio.volume = 0.3;
-    audio.play().catch(e => console.log('Audio play failed:', e));
+function startBackgroundMusic() {
+  if (!audioStarted) {
+    ambientMusic.play().catch(e => console.log('Background music autoplay prevented:', e));
     audioStarted = true;
   }
-}, { once: true });
+}
+
+// Start music on first click or hover
+document.addEventListener('click', startBackgroundMusic, { once: true });
+document.addEventListener('mouseenter', startBackgroundMusic, { once: true });
 
 // Add atmospheric cloud movement
 function createClouds() {
