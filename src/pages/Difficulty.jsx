@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom'
 import useAudio from '../hooks/useAudio'
+import Background from '../components/Background'
 import '../styles/difficulty.css'
 
 function Difficulty() {
@@ -52,6 +53,7 @@ function Difficulty() {
 
   return (
     <div className="difficulty-container">
+      <Background />
       <div className="difficulty-content">
         <button onClick={handleBack} className="back-button" onMouseEnter={playHoverSound}>
           ← Kembali
@@ -78,6 +80,10 @@ function Difficulty() {
             </div>
           ))}
         </div>
+
+        <footer className="footer">
+          <p className="credit">by semesta</p>
+        </footer>
       </div>
     </div>
   )
