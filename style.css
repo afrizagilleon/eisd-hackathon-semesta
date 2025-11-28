@@ -186,16 +186,17 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 240px;
+  height: 300px;
   z-index: 50;
   overflow: hidden;
 }
 
 .grass-image {
-  width: 120%;
-  height: 120%;
+  width: 100%;
+  height: auto;
+  min-height: 100%;
   object-fit: cover;
-  object-position: center top;
+  object-position: center bottom;
   opacity: 0.9;
   animation: grassSway 8s ease-in-out infinite;
   transform-origin: center top;
