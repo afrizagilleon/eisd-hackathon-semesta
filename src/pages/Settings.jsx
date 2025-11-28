@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import useAudio from '../hooks/useAudio'
-import Scene from '../components/Scene'
+import Background from '../components/Background'
 import '../styles/settings.css'
 
 function Settings() {
@@ -117,7 +117,7 @@ function Settings() {
 
   return (
     <div className="settings-container">
-      <Scene />
+      <Background />
       <div className="settings-content">
         <button onClick={handleBack} className="back-button" onMouseEnter={playHoverSound}>
           ← Kembali

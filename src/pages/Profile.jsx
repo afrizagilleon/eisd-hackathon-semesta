@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import useAudio from '../hooks/useAudio'
-import Scene from '../components/Scene'
+import Background from '../components/Background'
 import '../styles/profile.css'
 
 function Profile() {
@@ -71,7 +71,7 @@ function Profile() {
 
   return (
     <div className="profile-container">
-      <Scene />
+      <Background />
       <div className="profile-content">
         <button onClick={handleBack} className="back-button" onMouseEnter={playHoverSound}>
           ← Kembali
