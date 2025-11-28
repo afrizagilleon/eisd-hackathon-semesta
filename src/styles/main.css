@@ -113,6 +113,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  pointer-events: auto;
 }
 
 .menu-item {
