@@ -7,52 +7,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Patrick+Hand&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/style.css">
 </head>
 <body>
-  <div class="orientation-warning">
-    <div class="warning-content">
-      <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
-        <line x1="8" y1="21" x2="16" y2="21"></line>
-        <line x1="12" y1="17" x2="12" y2="21"></line>
-      </svg>
-      <h2>Please Use Desktop, Tablet, or Rotate Your Phone</h2>
-      <p>ElectroQuest is best experienced on larger screens or in landscape mode.</p>
-    </div>
-  </div>
-  <div class="fog-layer fog-1"></div>
-  <div class="fog-layer fog-2"></div>
-  <div class="fog-layer fog-3"></div>
-
-  <div class="particles"></div>
-
-  <div class="container">
-    <header class="header">
-      <h1 class="title">ElectroQuest</h1>
-      <nav class="menu">
-        <a href="#play" class="menu-item">play</a>
-        <a href="#settings" class="menu-item">penganturan</a>
-        <a href="#sound" class="menu-item">suara</a>
-      </nav>
-    </header>
-
-    <div class="scene">
-      <div class="moon"></div>
-
-      <div class="haunted-house">
-        <img src="/assets/semesta-gambar rumah.png" alt="Haunted House" class="house-image">
-      </div>
-
-      <div class="ground">
-        <img src="/assets/semesta-gambar rumput.png" alt="Grass" class="grass-image">
-      </div>
-    </div>
-
-    <footer class="footer">
-      <p class="credit">by semesta</p>
-    </footer>
-  </div>
+  <div id="root"></div>
 
   <audio id="ambient-music" loop>
     <source src="/assets/sounds/semesta-sound background music.wav" type="audio/wav">
@@ -64,6 +21,6 @@
     <source src="/assets/sounds/semesta-sound hover.wav" type="audio/wav">
   </audio>
 
-  <script type="module" src="/main.js"></script>
+  <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
