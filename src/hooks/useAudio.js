@@ -1,10 +1,17 @@
 import { useEffect, useRef, useState } from 'react'
+import { supabase } from '../lib/supabase'
+import { useAuth } from '../contexts/AuthContext'
 
 const useAudio = () => {
+  const { user } = useAuth()
   const ambientMusicRef = useRef(null)
   const clickSoundRef = useRef(null)
   const hoverSoundRef = useRef(null)
   const [audioStarted, setAudioStarted] = useState(false)
+  const [settings, setSettings] = useState({
+    effects_enabled: true,
+    effects_volume: 50
+  })
 
   useEffect(() => {
     ambientMusicRef.current = document.getElementById('ambient-music')
@@ -14,7 +21,28 @@ const useAudio = () => {
     if (ambientMusicRef.current) ambientMusicRef.current.volume = 0.3
     if (clickSoundRef.current) clickSoundRef.current.volume = 0.5
     if (hoverSoundRef.current) hoverSoundRef.current.volume = 0.3
-  }, [])
+
+    if (user) {
+      fetchSettings()
+    }
+  }, [user])
+
+  const fetchSettings = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('settings')
+        .select('effects_enabled, effects_volume')
+        .eq('user_id', user.id)
+        .maybeSingle()
+
+      if (error) throw error
+      if (data) {
+        setSettings(data)
+      }
+    } catch (error) {
+      console.error('Error fetching audio settings:', error)
+    }
+  }
 
   const startBackgroundMusic = () => {
     if (!audioStarted && ambientMusicRef.current) {
@@ -26,8 +54,9 @@ const useAudio = () => {
   }
 
   const playClickSound = () => {
-    if (clickSoundRef.current) {
+    if (clickSoundRef.current && settings.effects_enabled) {
       clickSoundRef.current.currentTime = 0
+      clickSoundRef.current.volume = settings.effects_volume / 100
       clickSoundRef.current.play().catch(e =>
         console.log('Click sound failed:', e)
       )
@@ -35,8 +64,9 @@ const useAudio = () => {
   }
 
   const playHoverSound = () => {
-    if (hoverSoundRef.current) {
+    if (hoverSoundRef.current && settings.effects_enabled) {
       hoverSoundRef.current.currentTime = 0
+      hoverSoundRef.current.volume = settings.effects_volume / 100
       hoverSoundRef.current.play().catch(e =>
         console.log('Hover sound failed:', e)
       )
