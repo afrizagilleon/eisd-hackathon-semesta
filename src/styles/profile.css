@@ -1,7 +1,7 @@
 .profile-container {
   height: 100vh;
   overflow: hidden;
-  padding: 1rem;
+  padding: 0;
   position: relative;
 }
 
@@ -13,6 +13,8 @@
   flex-direction: column;
   position: relative;
   z-index: 100;
+  padding: 1rem;
+  padding-bottom: 4rem;
 }
 
 .back-button {
@@ -26,12 +28,15 @@
   cursor: pointer;
   transition: all 0.3s ease;
   margin-bottom: 1rem;
+  position: relative;
+  overflow: visible;
 }
 
 .back-button:hover {
   background: rgba(251, 191, 36, 0.1);
   border-color: #fbbf24;
   transform: translateX(-5px);
+  box-shadow: -10px 0 20px rgba(251, 191, 36, 0.3);
 }
 
 .profile-card {
@@ -219,4 +224,18 @@
   text-align: center;
   color: #cbd5e1;
   font-size: 1.5rem;
+}
+
+.footer {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 101;
+  pointer-events: none;
+}
+
+.credit {
+  color: rgba(203, 213, 225, 0.6);
+  font-size: 0.9rem;
+  font-family: 'Patrick Hand', cursive;
 }

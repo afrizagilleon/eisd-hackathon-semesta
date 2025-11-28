@@ -1,7 +1,7 @@
 .play-container {
   height: 100vh;
   overflow: hidden;
-  padding: 2rem;
+  padding: 0;
   position: relative;
 }
 
@@ -13,6 +13,8 @@
   flex-direction: column;
   position: relative;
   z-index: 100;
+  padding: 2rem;
+  padding-bottom: 4rem;
 }
 
 .play-title {
@@ -183,4 +185,18 @@
 
 .topic-card:hover .topic-arrow {
   transform: translateX(10px);
+}
+
+.footer {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 101;
+  pointer-events: none;
+}
+
+.credit {
+  color: rgba(203, 213, 225, 0.6);
+  font-size: 0.9rem;
+  font-family: 'Patrick Hand', cursive;
 }
