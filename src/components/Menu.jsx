@@ -11,18 +11,11 @@ function Menu() {
     { id: 'settings', label: 'Pengaturan', path: '/settings' }
   ]
 
-  const handleClick = (e, item) => {
-    e.preventDefault()
+  const handleClick = (path) => {
     playClickSound()
-
-    e.currentTarget.style.color = '#fbbf24'
-    e.currentTarget.style.textShadow = '0 0 20px rgba(251, 191, 36, 0.8)'
-
     setTimeout(() => {
-      e.currentTarget.style.color = ''
-      e.currentTarget.style.textShadow = ''
-      navigate(item.path)
-    }, 200)
+      navigate(path)
+    }, 100)
   }
 
   const handleMouseEnter = () => {
@@ -32,15 +25,14 @@ function Menu() {
   return (
     <nav className="menu">
       {menuItems.map(item => (
-        <a
+        <button
           key={item.id}
-          href={item.path}
           className="menu-item"
-          onClick={(e) => handleClick(e, item)}
+          onClick={() => handleClick(item.path)}
           onMouseEnter={handleMouseEnter}
         >
           {item.label}
-        </a>
+        </button>
       ))}
     </nav>
   )

@@ -117,13 +117,19 @@ body {
 }
 
 .menu-item {
+  font-family: 'Patrick Hand', cursive;
   font-size: 2rem;
   color: #e2e8f0;
+  background: none;
+  border: none;
+  cursor: pointer;
   text-decoration: none;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
   transition: all 0.3s ease;
   display: inline-block;
   position: relative;
+  padding: 0;
+  text-align: left;
 }
 
 .menu-item::before {

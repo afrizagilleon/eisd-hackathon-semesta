@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'
 import { useAuth } from '../contexts/AuthContext'
 import { supabase } from '../lib/supabase'
 import useAudio from '../hooks/useAudio'
+import Scene from '../components/Scene'
 import '../styles/play.css'
 
 function Play() {
@@ -106,6 +107,7 @@ function Play() {
 
   return (
     <div className="play-container">
+      <Scene />
       <div className="play-content">
         <button onClick={handleBack} className="back-button" onMouseEnter={playHoverSound}>
           ← Kembali
@@ -157,6 +159,10 @@ function Play() {
             </div>
           ))}
         </div>
+
+        <footer className="footer">
+          <p className="credit">by semesta</p>
+        </footer>
       </div>
     </div>
   )
