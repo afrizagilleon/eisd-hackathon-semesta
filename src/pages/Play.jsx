@@ -17,7 +17,7 @@ function Play() {
     {
       id: 'components',
       title: 'Kodeks Komponen',
-      description: 'Pelajari komponen dasar elektronika seperti resistor, LED, capacitor, dan battery',
+      description: 'Pelajari komponen dasar elektronika seperti resistor, capacitor, dan lainnya',
       icon: '⚡',
       color: '#fbbf24'
     },
