@@ -92,7 +92,7 @@
  */
 
 // TODO: Ganti dengan URL webhook n8n Anda
-const N8N_WEBHOOK_URL = process.env.VITE_N8N_WEBHOOK_URL || 'YOUR_N8N_WEBHOOK_URL_HERE'
+const N8N_WEBHOOK_URL = import.meta.env.VITE_N8N_WEBHOOK_URL || 'YOUR_N8N_WEBHOOK_URL_HERE'
 
 // Fallback experiments jika API gagal
 const fallbackExperiments = {
