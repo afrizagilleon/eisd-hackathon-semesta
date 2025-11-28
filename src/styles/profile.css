@@ -1,7 +1,7 @@
 .profile-container {
   height: 100vh;
   overflow: hidden;
-  padding: 2rem;
+  padding: 1rem;
   position: relative;
 }
 
@@ -19,13 +19,13 @@
   background: rgba(26, 35, 50, 0.6);
   border: 2px solid rgba(251, 191, 36, 0.3);
   border-radius: 8px;
-  padding: 0.75rem 1.5rem;
+  padding: 0.5rem 1rem;
   color: #fbbf24;
   font-family: 'Patrick Hand', cursive;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .back-button:hover {
@@ -38,14 +38,14 @@
   background: rgba(26, 35, 50, 0.8);
   border: 2px solid rgba(251, 191, 36, 0.3);
   border-radius: 16px;
-  padding: 2.5rem;
+  padding: 1.5rem;
   box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
 }
 
 .profile-header {
   display: flex;
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 1.5rem;
+  margin-bottom: 1rem;
   align-items: center;
 }
 
@@ -54,10 +54,10 @@
 }
 
 .avatar-frame {
-  width: 150px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  border: 4px solid #fbbf24;
+  border: 3px solid #fbbf24;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,7 +81,7 @@
 }
 
 .avatar-placeholder {
-  font-size: 4rem;
+  font-size: 2.5rem;
   color: #fbbf24;
   font-weight: bold;
   z-index: 1;
@@ -92,9 +92,9 @@
 }
 
 .profile-name {
-  font-size: 2.5rem;
+  font-size: 1.8rem;
   color: #ffffff;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
 }
 
 .edit-name {
@@ -141,27 +141,27 @@
 }
 
 .level-title {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   color: #60a5fa;
 }
 
 .level-number {
-  font-size: 1.2rem;
+  font-size: 0.95rem;
   color: #cbd5e1;
 }
 
 .xp-section {
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
 }
 
 .xp-bar-container {
   width: 100%;
-  height: 30px;
+  height: 20px;
   background: rgba(15, 22, 33, 0.8);
   border: 2px solid rgba(251, 191, 36, 0.3);
-  border-radius: 15px;
+  border-radius: 10px;
   overflow: hidden;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
 }
 
 .xp-bar {
@@ -174,20 +174,20 @@
 .xp-text {
   text-align: center;
   color: #cbd5e1;
-  font-size: 1.1rem;
+  font-size: 0.9rem;
 }
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.8rem;
 }
 
 .stat-card {
   background: rgba(15, 22, 33, 0.6);
   border: 2px solid rgba(251, 191, 36, 0.2);
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 0.8rem;
   text-align: center;
   transition: all 0.3s ease;
 }
@@ -199,20 +199,20 @@
 }
 
 .stat-icon {
-  font-size: 2.5rem;
-  margin-bottom: 0.5rem;
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
 }
 
 .stat-value {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: #fbbf24;
   font-weight: bold;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
 }
 
 .stat-label {
   color: #cbd5e1;
-  font-size: 1rem;
+  font-size: 0.75rem;
 }
 
 .loading-text {
