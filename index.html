@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ElectroQuest - Gamified Electronics Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Creepster&family=Patrick+Hand&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <div class="fog-layer fog-1"></div>
+  <div class="fog-layer fog-2"></div>
+  <div class="fog-layer fog-3"></div>
+
+  <div class="particles"></div>
+
+  <div class="container">
+    <header class="header">
+      <h1 class="title">ElectroQuest</h1>
+      <nav class="menu">
+        <a href="#play" class="menu-item">play</a>
+        <a href="#settings" class="menu-item">penganturan</a>
+        <a href="#sound" class="menu-item">suara</a>
+      </nav>
+    </header>
+
+    <div class="scene">
+      <div class="moon"></div>
+
+      <div class="haunted-house">
+        <div class="house-body">
+          <div class="roof"></div>
+          <div class="main-structure">
+            <div class="window window-left"></div>
+            <div class="window window-right"></div>
+            <div class="door">
+              <div class="door-handle"></div>
+            </div>
+            <div class="window window-attic"></div>
+          </div>
+        </div>
+        <div class="tower">
+          <div class="tower-roof"></div>
+          <div class="tower-body">
+            <div class="tower-window"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ground">
+        <div class="grass grass-1"></div>
+        <div class="grass grass-2"></div>
+        <div class="grass grass-3"></div>
+        <div class="grass grass-4"></div>
+        <div class="grass grass-5"></div>
+
+        <div class="rock rock-1"></div>
+        <div class="rock rock-2"></div>
+        <div class="rock rock-3"></div>
+      </div>
+    </div>
+
+    <footer class="footer">
+      <p class="credit">by semesta</p>
+    </footer>
+  </div>
+
+  <audio id="ambient-music" loop>
+    <!-- Audio source to be added manually -->
+  </audio>
+
+  <script type="module" src="/main.js"></script>
+</body>
+</html>
