@@ -186,14 +186,14 @@ body {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 400px;
+  height: 240px;
   z-index: 50;
   overflow: hidden;
 }
 
 .grass-image {
-  width: 200%;
-  height: 200%;
+  width: 120%;
+  height: 120%;
   object-fit: cover;
   object-position: center top;
   opacity: 0.9;
