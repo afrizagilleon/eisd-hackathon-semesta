@@ -56,7 +56,30 @@ export const AuthProvider = ({ children }) => {
         .maybeSingle()
 
       if (error) throw error
-      setProfile(data)
+
+      if (!data) {
+        const { data: userData } = await supabase.auth.getUser()
+        const displayName = userData?.user?.user_metadata?.display_name || 'Petualang Baru'
+
+        await supabase.from('profiles').insert({
+          user_id: userId,
+          display_name: displayName
+        })
+
+        await supabase.from('settings').insert({
+          user_id: userId
+        })
+
+        const { data: newProfile } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('user_id', userId)
+          .maybeSingle()
+
+        setProfile(newProfile)
+      } else {
+        setProfile(data)
+      }
     } catch (error) {
       console.error('Error fetching profile:', error)
     }
@@ -75,6 +98,28 @@ export const AuthProvider = ({ children }) => {
       })
 
       if (error) throw error
+
+      if (data.user) {
+        await new Promise(resolve => setTimeout(resolve, 1000))
+
+        const { data: existingProfile } = await supabase
+          .from('profiles')
+          .select('id')
+          .eq('user_id', data.user.id)
+          .maybeSingle()
+
+        if (!existingProfile) {
+          await supabase.from('profiles').insert({
+            user_id: data.user.id,
+            display_name: displayName || 'Petualang Baru'
+          })
+
+          await supabase.from('settings').insert({
+            user_id: data.user.id
+          })
+        }
+      }
+
       return { data, error: null }
     } catch (error) {
       return { data: null, error }
