@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase'
 import { generateExperiment, calculateXP } from '../services/n8nService'
 import useAudio from '../hooks/useAudio'
 import Background from '../components/Background'
+import CircuitPuzzle from '../components/CircuitPuzzle'
 import '../styles/laboratory.css'
 
 function Laboratory() {
@@ -19,6 +20,8 @@ function Laboratory() {
   const [experiment, setExperiment] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [hintsUsed, setHintsUsed] = useState(0)
+  const [completed, setCompleted] = useState(false)
 
   useEffect(() => {
     loadExperiment()
@@ -42,6 +45,43 @@ function Laboratory() {
   const handleBack = () => {
     playClickSound()
     navigate('/play')
+  }
+
+  const handlePuzzleComplete = async (result) => {
+    playClickSound()
+    setCompleted(true)
+
+    const earnedXP = calculateXP(experiment.base_xp, difficulty, hintsUsed, experiment.max_hints)
+
+    try {
+      const { error } = await supabase
+        .from('experiment_history')
+        .insert({
+          user_id: user.id,
+          experiment_id: experiment.id,
+          topic,
+          difficulty,
+          success: result.success,
+          hints_used: hintsUsed,
+          xp_earned: earnedXP,
+          is_daily: isDaily
+        })
+
+      if (error) throw error
+
+      const { error: xpError } = await supabase.rpc('add_user_xp', {
+        p_user_id: user.id,
+        p_xp_amount: earnedXP
+      })
+
+      if (xpError) throw xpError
+    } catch (err) {
+      console.error('Error saving experiment result:', err)
+    }
+  }
+
+  const handleHintRequest = () => {
+    setHintsUsed(prev => prev + 1)
   }
 
   if (loading) {
@@ -107,21 +147,11 @@ function Laboratory() {
 
         <div className="workbench-section">
           <h2 className="section-title">Meja Kerja</h2>
-          <div className="workbench-placeholder">
-            <p className="placeholder-text">
-              🔬 Antarmuka eksperimen interaktif akan tersedia setelah konfigurasi n8n selesai
-            </p>
-            <div className="components-preview">
-              <h3>Komponen Tersedia:</h3>
-              <ul>
-                {experiment.components.map((component) => (
-                  <li key={component.id}>
-                    {component.label}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
+          <CircuitPuzzle
+            experiment={experiment}
+            onComplete={handlePuzzleComplete}
+            onHintRequest={handleHintRequest}
+          />
         </div>
 
         <div className="experiment-details">
