@@ -9,15 +9,12 @@ function Home() {
     <div className="container">
       <Scene />
       <div className="content">
+        <p className="credit-top-right">by semesta</p>
         <header className="header">
           <h1 className="title">ElectroQuest</h1>
           <p className="subtitle">Kuasai Seni Elektronika</p>
           <Menu />
         </header>
-
-        <footer className="footer">
-          <p className="credit">by semesta</p>
-        </footer>
       </div>
     </div>
   )

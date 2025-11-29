@@ -159,10 +159,6 @@ function Play() {
             </div>
           ))}
         </div>
-
-        <footer className="footer">
-          <p className="credit">by semesta</p>
-        </footer>
       </div>
     </div>
   )
