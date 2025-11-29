@@ -12,7 +12,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
-  z-index: 100;
+  z-index: 50;
   overflow-y: auto;
   scrollbar-width: none;
   padding: 1rem;
@@ -112,11 +112,13 @@
 }
 
 .experiment-info {
-  background: rgba(26, 35, 50, 0.8);
+  background: rgba(26, 35, 50, 0.95);
   border: 2px solid rgba(251, 191, 36, 0.3);
   border-radius: 16px;
   padding: 2rem;
   margin-bottom: 2rem;
+  position: relative;
+  z-index: 10;
 }
 
 .experiment-title {
@@ -152,11 +154,13 @@
 }
 
 .workbench-section {
-  background: rgba(26, 35, 50, 0.8);
+  background: rgba(26, 35, 50, 0.95);
   border: 2px solid rgba(251, 191, 36, 0.3);
   border-radius: 16px;
   padding: 2rem;
   margin-bottom: 2rem;
+  position: relative;
+  z-index: 10;
 }
 
 .section-title {
@@ -221,10 +225,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(26, 35, 50, 0.8);
+  background: rgba(26, 35, 50, 0.95);
   border: 2px solid rgba(251, 191, 36, 0.3);
   border-radius: 16px;
   padding: 1.5rem;
+  position: relative;
+  z-index: 10;
 }
 
 .hints-section h3 {
@@ -255,7 +261,7 @@
   position: fixed;
   bottom: 1rem;
   left: 1rem;
-  z-index: 101;
+  z-index: 60;
   pointer-events: none;
 }
 
@@ -263,4 +269,26 @@
   color: rgba(203, 213, 225, 0.6);
   font-size: 0.9rem;
   font-family: 'Patrick Hand', cursive;
+}
+
+.back-button {
+  position: relative;
+  z-index: 20;
+  padding: 0.75rem 1.5rem;
+  font-size: 1.1rem;
+  font-family: 'Patrick Hand', cursive;
+  background: rgba(96, 165, 250, 0.2);
+  border: 2px solid #60a5fa;
+  border-radius: 8px;
+  color: #60a5fa;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-bottom: 1rem;
+}
+
+.back-button:hover {
+  background: rgba(96, 165, 250, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(96, 165, 250, 0.4);
 }

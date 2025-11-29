@@ -482,16 +482,30 @@
 }
 
 .circuit-canvas-container {
-  background: rgba(15, 22, 33, 0.6);
+  background: rgba(15, 22, 33, 0.95);
   border: 2px solid rgba(251, 191, 36, 0.3);
   border-radius: 12px;
   height: 500px;
   overflow: hidden;
+  position: relative;
+  z-index: 1;
 }
 
 .circuit-canvas {
   width: 100%;
   height: 100%;
+}
+
+.react-flow__renderer {
+  z-index: 1 !important;
+}
+
+.react-flow__controls {
+  z-index: 5 !important;
+}
+
+.react-flow__minimap {
+  z-index: 5 !important;
 }
 
 .reset-button {
