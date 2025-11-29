@@ -79,11 +79,14 @@
   border: 2px solid rgba(251, 191, 36, 0.3);
   border-radius: 8px;
   padding: 0.75rem;
-  cursor: grab;
+  cursor: pointer;
   transition: all 0.3s ease;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.75rem;
+  gap: 0.5rem;
+  width: 100%;
+  position: relative;
 }
 
 .component-item:hover {
@@ -95,6 +98,13 @@
 .component-item.dragging {
   cursor: grabbing;
   opacity: 0.5;
+}
+
+.component-item.placed {
+  background: rgba(52, 211, 153, 0.2);
+  border-color: #34d399;
+  cursor: not-allowed;
+  opacity: 0.6;
 }
 
 .component-item.placed-indicator {
@@ -395,6 +405,408 @@
   color: #fbbf24;
   font-size: 1.2rem;
   font-weight: bold;
+}
+
+.success-close {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: rgba(239, 68, 68, 0.2);
+  border: 2px solid #ef4444;
+  color: #ef4444;
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.success-close:hover {
+  background: rgba(239, 68, 68, 0.3);
+  transform: rotate(90deg);
+}
+
+.success-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.success-continue-btn {
+  background: #34d399;
+  border: none;
+  color: #0f1621;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  font-family: 'Patrick Hand', cursive;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.success-continue-btn:hover {
+  background: #10b981;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 211, 153, 0.5);
+}
+
+.placed-badge {
+  background: #34d399;
+  color: #0f1621;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.7rem;
+  font-weight: bold;
+}
+
+.puzzle-header {
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.puzzle-header h2 {
+  color: #fbbf24;
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.puzzle-header p {
+  color: #cbd5e1;
+  font-size: 1.1rem;
+}
+
+.circuit-canvas-container {
+  background: rgba(15, 22, 33, 0.6);
+  border: 2px solid rgba(251, 191, 36, 0.3);
+  border-radius: 12px;
+  height: 500px;
+  overflow: hidden;
+}
+
+.circuit-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.reset-button {
+  background: rgba(239, 68, 68, 0.2);
+  border: 2px solid #ef4444;
+  color: #ef4444;
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  font-family: 'Patrick Hand', cursive;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+}
+
+.reset-button:hover {
+  background: rgba(239, 68, 68, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
+}
+
+.circuit-node {
+  background: rgba(26, 35, 50, 0.95);
+  border: 2px solid rgba(251, 191, 36, 0.5);
+  border-radius: 12px;
+  padding: 1rem;
+  min-width: 120px;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.circuit-node.selected {
+  border-color: #fbbf24;
+  box-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+}
+
+.circuit-node .node-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.circuit-node .node-label {
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.circuit-node .node-value {
+  color: #94a3b8;
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.handle-positive,
+.handle-negative,
+.handle-anode,
+.handle-cathode,
+.handle-pin,
+.handle-wire {
+  width: 14px !important;
+  height: 14px !important;
+  border: 2px solid #fbbf24 !important;
+  background: #1a2332 !important;
+  transition: all 0.3s ease !important;
+}
+
+.handle-positive {
+  border-color: #ef4444 !important;
+  background: #ef4444 !important;
+}
+
+.handle-negative {
+  border-color: #3b82f6 !important;
+  background: #3b82f6 !important;
+}
+
+.handle-anode {
+  border-color: #ef4444 !important;
+}
+
+.handle-cathode {
+  border-color: #3b82f6 !important;
+}
+
+.handle-positive:hover,
+.handle-negative:hover,
+.handle-anode:hover,
+.handle-cathode:hover,
+.handle-pin:hover,
+.handle-wire:hover {
+  transform: scale(1.3);
+  box-shadow: 0 0 10px currentColor;
+}
+
+.terminal-label {
+  position: absolute;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #fbbf24;
+}
+
+.positive-label {
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ef4444;
+}
+
+.negative-label {
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #3b82f6;
+}
+
+.anode-label {
+  left: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #ef4444;
+}
+
+.cathode-label {
+  right: -10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #3b82f6;
+}
+
+.battery-symbol {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  margin: 0.5rem 0;
+}
+
+.battery-bar {
+  background: #fbbf24;
+  width: 4px;
+}
+
+.battery-bar.short {
+  height: 20px;
+}
+
+.battery-bar.long {
+  height: 35px;
+}
+
+.led-bulb {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #374151;
+  border: 3px solid #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 0.5rem 0;
+  transition: all 0.3s ease;
+}
+
+.led-bulb.glowing {
+  background: #fbbf24;
+  border-color: #fbbf24;
+  box-shadow: 0 0 20px #fbbf24, 0 0 40px #fbbf24;
+}
+
+.led-core {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: #1f2937;
+  transition: all 0.3s ease;
+}
+
+.led-bulb.glowing .led-core {
+  background: #fff;
+  box-shadow: 0 0 10px #fff;
+}
+
+.glow-ring {
+  position: absolute;
+  border-radius: 50%;
+  border: 2px solid #fbbf24;
+  opacity: 0.6;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.ring-1 {
+  width: 50px;
+  height: 50px;
+}
+
+.ring-2 {
+  width: 65px;
+  height: 65px;
+  animation-delay: 0.3s;
+}
+
+.ring-3 {
+  width: 80px;
+  height: 80px;
+  animation-delay: 0.6s;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.2);
+  }
+}
+
+.resistor-symbol {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0.5rem 0;
+}
+
+.resistor-body {
+  width: 60px;
+  height: 20px;
+  background: #d97706;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  padding: 0 8px;
+}
+
+.resistor-band {
+  width: 3px;
+  height: 16px;
+}
+
+.resistor-band.band-1 {
+  background: #ef4444;
+}
+
+.resistor-band.band-2 {
+  background: #ef4444;
+}
+
+.resistor-band.band-3 {
+  background: #a16207;
+}
+
+.resistor-band.band-4 {
+  background: #fbbf24;
+}
+
+.resistor-lead {
+  width: 15px;
+  height: 2px;
+  background: #94a3b8;
+}
+
+.switch-symbol {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+  margin: 0.5rem 0;
+}
+
+.switch-contact {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #94a3b8;
+  border: 2px solid #6b7280;
+}
+
+.switch-lever {
+  position: absolute;
+  left: 6px;
+  width: 30px;
+  height: 2px;
+  background: #fbbf24;
+  transform-origin: left center;
+  transition: all 0.3s ease;
+}
+
+.switch-lever.closed {
+  transform: rotate(0deg);
+}
+
+.switch-lever.open {
+  transform: rotate(-25deg);
+}
+
+.wire-symbol {
+  margin: 0.5rem 0;
+}
+
+.wire-line {
+  width: 50px;
+  height: 3px;
+  background: #fbbf24;
+  border-radius: 2px;
+}
+
+.circuit-node.active .wire-line,
+.circuit-node.active .resistor-body {
+  box-shadow: 0 0 10px #fbbf24;
 }
 
 .connection-lines {

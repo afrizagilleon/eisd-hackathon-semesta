@@ -121,6 +121,19 @@ const fallbackExperiments = {
         'Resistor harus dipasang sebelum LED untuk melindunginya',
         'Kaki panjang LED adalah anoda (positif), kaki pendek adalah katoda (negatif)'
       ],
+      expectedSolution: {
+        components: [
+          { type: 'battery' },
+          { type: 'resistor' },
+          { type: 'led' }
+        ],
+        connections: [
+          { from: 'battery', to: 'resistor' },
+          { from: 'resistor', to: 'led' },
+          { from: 'led', to: 'battery' }
+        ],
+        shouldLightLED: true
+      },
       learning_points: [
         'LED membutuhkan resistor untuk membatasi arus',
         'Rangkaian harus membentuk jalur tertutup',

@@ -1,318 +1,297 @@
-import { useState, useCallback } from 'react'
-import { DndProvider, useDrag, useDrop } from 'react-dnd'
-import { HTML5Backend } from 'react-dnd-html5-backend'
-import '../styles/puzzle.css'
+import { useState, useCallback, useEffect, useMemo } from 'react';
+import ReactFlow, {
+  Background,
+  Controls,
+  MiniMap,
+  addEdge,
+  useNodesState,
+  useEdgesState,
+  MarkerType
+} from 'reactflow';
+import 'reactflow/dist/style.css';
+import '../styles/puzzle.css';
 
-const ItemTypes = {
-  COMPONENT: 'component'
-}
+import BatteryNode from './nodes/BatteryNode';
+import LEDNode from './nodes/LEDNode';
+import ResistorNode from './nodes/ResistorNode';
+import SwitchNode from './nodes/SwitchNode';
+import WireNode from './nodes/WireNode';
 
-function DraggableComponent({ component, index, onPlace }) {
-  const [{ isDragging }, drag] = useDrag(() => ({
-    type: ItemTypes.COMPONENT,
-    item: { component, index },
-    collect: (monitor) => ({
-      isDragging: monitor.isDragging()
-    })
-  }))
+import { simulateCircuit, validateCircuitSolution } from '../utils/circuitSimulator';
 
-  const getComponentIcon = (type) => {
-    const icons = {
-      battery: '🔋',
-      resistor: '⚡',
-      led: '💡',
-      capacitor: '🔌',
-      transistor: '🔧',
-      motor: '⚙️',
-      switch: '🎚️',
-      button: '🔘',
-      buzzer: '🔔',
-      diode: '➡️',
-      wire: '〰️',
-      multimeter: '📊',
-      breadboard: '🧱'
-    }
-    return icons[type] || '📦'
-  }
+const nodeTypes = {
+  battery: BatteryNode,
+  led: LEDNode,
+  resistor: ResistorNode,
+  switch: SwitchNode,
+  wire: WireNode
+};
 
-  return (
-    <div
-      ref={drag}
-      className={`component-item ${isDragging ? 'dragging' : ''}`}
-      style={{ opacity: isDragging ? 0.5 : 1 }}
-    >
-      <div className="component-icon">{getComponentIcon(component.type)}</div>
-      <div className="component-label">{component.label}</div>
-    </div>
-  )
-}
-
-function DropZone({ position, component, onDrop, isConnected }) {
-  const [{ isOver }, drop] = useDrop(() => ({
-    accept: ItemTypes.COMPONENT,
-    drop: (item) => onDrop(position, item.component),
-    collect: (monitor) => ({
-      isOver: monitor.isOver()
-    })
-  }))
-
-  const getComponentIcon = (type) => {
-    const icons = {
-      battery: '🔋',
-      resistor: '⚡',
-      led: '💡',
-      capacitor: '🔌',
-      transistor: '🔧',
-      motor: '⚙️',
-      switch: '🎚️',
-      button: '🔘',
-      buzzer: '🔔',
-      diode: '➡️',
-      wire: '〰️',
-      multimeter: '📊',
-      breadboard: '🧱'
-    }
-    return icons[type] || '📦'
-  }
-
-  return (
-    <div
-      ref={drop}
-      className={`drop-zone ${isOver ? 'hover' : ''} ${component ? 'filled' : ''} ${isConnected ? 'connected' : ''}`}
-    >
-      {component ? (
-        <>
-          <div className="component-icon">{getComponentIcon(component.type)}</div>
-          <div className="component-name">{component.label}</div>
-        </>
-      ) : (
-        <div className="drop-placeholder">Drop komponen di sini</div>
-      )}
-    </div>
-  )
-}
+let nodeIdCounter = 0;
 
 function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
-  const [placedComponents, setPlacedComponents] = useState({})
-  const [connections, setConnections] = useState([])
-  const [selectedSlot, setSelectedSlot] = useState(null)
-  const [usedHints, setUsedHints] = useState(0)
-  const [currentHint, setCurrentHint] = useState(null)
-  const [showSuccess, setShowSuccess] = useState(false)
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [availableComponents, setAvailableComponents] = useState([]);
+  const [usedHints, setUsedHints] = useState(0);
+  const [currentHint, setCurrentHint] = useState(null);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [validationResult, setValidationResult] = useState(null);
 
-  const totalSlots = experiment.components.length + 2
-
-  const handleDrop = useCallback((position, component) => {
-    setPlacedComponents(prev => ({
-      ...prev,
-      [position]: component
-    }))
-  }, [])
-
-  const handleSlotClick = (position) => {
-    if (selectedSlot === null) {
-      if (placedComponents[position]) {
-        setSelectedSlot(position)
-      }
-    } else {
-      if (selectedSlot !== position && placedComponents[position]) {
-        const newConnection = { from: selectedSlot, to: position }
-        setConnections(prev => [...prev, newConnection])
-      }
-      setSelectedSlot(null)
+  useEffect(() => {
+    if (experiment?.components) {
+      setAvailableComponents(experiment.components.map(comp => ({ ...comp, placed: false })));
     }
-  }
+  }, [experiment]);
 
-  const handleRemoveComponent = (position) => {
-    setPlacedComponents(prev => {
-      const updated = { ...prev }
-      delete updated[position]
-      return updated
-    })
-    setConnections(prev => prev.filter(c => c.from !== position && c.to !== position))
-  }
+  const simulation = useMemo(() => {
+    return simulateCircuit(nodes, edges);
+  }, [nodes, edges]);
+
+  useEffect(() => {
+    setNodes(currentNodes =>
+      currentNodes.map(node => {
+        const isLit = simulation.litLEDs.has(node.id);
+        const isPowered = simulation.poweredNodes.has(node.id);
+        const hasCurrent = simulation.activeComponents.has(node.id);
+
+        return {
+          ...node,
+          data: {
+            ...node.data,
+            isLit: node.type === 'led' ? isLit : node.data.isLit,
+            isPowered: node.type === 'battery' ? isPowered : node.data.isPowered,
+            hasCurrent: hasCurrent
+          }
+        };
+      })
+    );
+  }, [simulation, setNodes]);
+
+  const onConnect = useCallback(
+    (params) => {
+      const newEdge = {
+        ...params,
+        type: 'default',
+        animated: true,
+        style: { stroke: '#fbbf24', strokeWidth: 3 },
+        markerEnd: {
+          type: MarkerType.ArrowClosed,
+          color: '#fbbf24'
+        }
+      };
+      setEdges((eds) => addEdge(newEdge, eds));
+    },
+    [setEdges]
+  );
+
+  const handleAddComponent = (component) => {
+    const nodeId = `node-${nodeIdCounter++}`;
+    const newNode = {
+      id: nodeId,
+      type: component.type,
+      position: { x: 250 + Math.random() * 100, y: 100 + Math.random() * 100 },
+      data: {
+        label: component.label,
+        voltage: component.voltage,
+        resistance: component.resistance,
+        color: component.color,
+        isClosed: component.isClosed !== undefined ? component.isClosed : true
+      }
+    };
+
+    setNodes((nds) => [...nds, newNode]);
+    setAvailableComponents((comps) =>
+      comps.map((c) => (c.id === component.id ? { ...c, placed: true } : c))
+    );
+  };
+
+  const handleReset = () => {
+    setNodes([]);
+    setEdges([]);
+    setAvailableComponents(
+      experiment.components.map(comp => ({ ...comp, placed: false }))
+    );
+    setCurrentHint(null);
+    setValidationResult(null);
+    nodeIdCounter = 0;
+  };
 
   const handleRequestHint = () => {
     if (usedHints < experiment.max_hints) {
-      setCurrentHint(experiment.hints[usedHints])
-      setUsedHints(prev => prev + 1)
-      if (onHintRequest) onHintRequest()
+      setCurrentHint(experiment.hints[usedHints]);
+      setUsedHints((prev) => prev + 1);
+      if (onHintRequest) onHintRequest();
     }
-  }
+  };
 
   const handleCheckSolution = () => {
-    const allComponentsPlaced = experiment.components.every(comp =>
-      Object.values(placedComponents).some(placed => placed.id === comp.id)
-    )
+    const requiredTypes = experiment.components.map(c => c.type);
+    const placedTypes = nodes.map(n => n.type);
 
-    if (!allComponentsPlaced) {
-      setCurrentHint('Semua komponen harus ditempatkan pada papan!')
-      return
+    const missingComponents = requiredTypes.filter(
+      type => !placedTypes.includes(type)
+    );
+
+    if (missingComponents.length > 0) {
+      setCurrentHint(`Komponen yang belum ditempatkan: ${missingComponents.join(', ')}`);
+      return;
     }
 
-    const hasEnoughConnections = connections.length >= 2
-
-    if (!hasEnoughConnections) {
-      setCurrentHint('Hubungkan komponen dengan mengklik dua komponen secara berurutan!')
-      return
+    if (edges.length === 0) {
+      setCurrentHint('Hubungkan komponen dengan menarik dari handle satu komponen ke handle komponen lain!');
+      return;
     }
 
-    setShowSuccess(true)
+    const result = validateCircuitSolution(nodes, edges, experiment.expectedSolution);
+    setValidationResult(result);
 
-    setTimeout(() => {
-      if (onComplete) {
-        onComplete({
-          success: true,
-          hintsUsed: usedHints,
-          connections: connections
-        })
-      }
-    }, 2000)
-  }
+    if (result.isCorrect) {
+      setShowSuccess(true);
+    } else {
+      setCurrentHint(result.feedback);
+    }
+  };
 
-  const isConnected = (position) => {
-    return connections.some(c => c.from === position || c.to === position)
-  }
+  const handleCloseSuccess = () => {
+    setShowSuccess(false);
+    if (onComplete) {
+      onComplete({
+        success: true,
+        hintsUsed: usedHints,
+        connections: edges.length
+      });
+    }
+  };
+
+  const onNodeDoubleClick = useCallback((event, node) => {
+    setNodes((nds) => nds.filter((n) => n.id !== node.id));
+    setEdges((eds) => eds.filter((e) => e.source !== node.id && e.target !== node.id));
+
+    const componentType = node.type;
+    setAvailableComponents((comps) =>
+      comps.map((c) => {
+        if (c.type === componentType && c.placed) {
+          return { ...c, placed: false };
+        }
+        return c;
+      })
+    );
+  }, [setNodes, setEdges]);
 
   return (
-    <DndProvider backend={HTML5Backend}>
-      <div className="circuit-puzzle">
-        <div className="puzzle-instructions">
-          <h3>Cara Bermain:</h3>
-          <ol>
-            <li>Drag komponen dari kotak komponen ke papan rangkaian</li>
-            <li>Klik komponen pertama, lalu klik komponen kedua untuk menghubungkannya</li>
-            <li>Klik kanan pada komponen untuk menghapusnya</li>
-            <li>Gunakan hint jika kesulitan</li>
-            <li>Tekan "Periksa Solusi" setelah selesai</li>
-          </ol>
-        </div>
-
-        <div className="puzzle-area">
-          <div className="components-drawer">
-            <h3>Komponen Tersedia</h3>
-            <div className="components-list">
-              {experiment.components.map((component, index) => {
-                const isPlaced = Object.values(placedComponents).some(p => p.id === component.id)
-                return !isPlaced ? (
-                  <DraggableComponent
-                    key={component.id}
-                    component={component}
-                    index={index}
-                    onPlace={handleDrop}
-                  />
-                ) : (
-                  <div key={component.id} className="component-item placed-indicator">
-                    <div className="component-icon">✓</div>
-                    <div className="component-label">Terpasang</div>
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-
-          <div className="circuit-board">
-            <h3>Papan Rangkaian</h3>
-            <svg className="connection-lines" style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
-              {connections.map((conn, idx) => {
-                const fromEl = document.querySelector(`[data-position="${conn.from}"]`)
-                const toEl = document.querySelector(`[data-position="${conn.to}"]`)
-
-                if (fromEl && toEl) {
-                  const fromRect = fromEl.getBoundingClientRect()
-                  const toRect = toEl.getBoundingClientRect()
-                  const containerRect = fromEl.closest('.circuit-board').getBoundingClientRect()
-
-                  const x1 = fromRect.left + fromRect.width / 2 - containerRect.left
-                  const y1 = fromRect.top + fromRect.height / 2 - containerRect.top
-                  const x2 = toRect.left + toRect.width / 2 - containerRect.left
-                  const y2 = toRect.top + toRect.height / 2 - containerRect.top
-
-                  return (
-                    <line
-                      key={idx}
-                      x1={x1}
-                      y1={y1}
-                      x2={x2}
-                      y2={y2}
-                      stroke="#fbbf24"
-                      strokeWidth="3"
-                      strokeDasharray="5,5"
-                    />
-                  )
-                }
-                return null
-              })}
-            </svg>
-
-            <div className="drop-zones-grid">
-              {Array.from({ length: totalSlots }).map((_, index) => (
-                <div
-                  key={index}
-                  data-position={index}
-                  onClick={() => handleSlotClick(index)}
-                  onContextMenu={(e) => {
-                    e.preventDefault()
-                    handleRemoveComponent(index)
-                  }}
-                  style={{ position: 'relative' }}
-                >
-                  <DropZone
-                    position={index}
-                    component={placedComponents[index]}
-                    onDrop={handleDrop}
-                    isConnected={isConnected(index)}
-                  />
-                  {selectedSlot === index && (
-                    <div className="selected-indicator">Dipilih</div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        <div className="puzzle-controls">
-          <button
-            className="hint-button"
-            onClick={handleRequestHint}
-            disabled={usedHints >= experiment.max_hints}
-          >
-            💡 Hint ({usedHints}/{experiment.max_hints})
-          </button>
-
-          <button
-            className="check-button"
-            onClick={handleCheckSolution}
-          >
-            ✓ Periksa Solusi
-          </button>
-        </div>
-
-        {currentHint && (
-          <div className="hint-display">
-            <div className="hint-icon">💡</div>
-            <div className="hint-text">{currentHint}</div>
-            <button className="hint-close" onClick={() => setCurrentHint(null)}>✕</button>
-          </div>
-        )}
-
-        {showSuccess && (
-          <div className="success-overlay">
-            <div className="success-card">
-              <div className="success-icon">🎉</div>
-              <h2>Eksperimen Berhasil!</h2>
-              <p>Kamu telah menyelesaikan rangkaian dengan benar!</p>
-              <div className="success-stats">
-                <div>Hint Digunakan: {usedHints}/{experiment.max_hints}</div>
-                <div>XP yang Didapat: {experiment.base_xp - (usedHints * 10)}</div>
-              </div>
-            </div>
-          </div>
-        )}
+    <div className="circuit-puzzle">
+      <div className="puzzle-header">
+        <h2>{experiment.title}</h2>
+        <p>{experiment.description}</p>
       </div>
-    </DndProvider>
-  )
+
+      <div className="puzzle-instructions">
+        <h3>Cara Bermain:</h3>
+        <ol>
+          <li>Klik komponen dari panel kiri untuk menambahkannya ke canvas</li>
+          <li>Drag komponen untuk memposisikannya</li>
+          <li>Tarik dari handle (titik koneksi) satu komponen ke handle komponen lain untuk menghubungkan</li>
+          <li>Double-click komponen untuk menghapusnya</li>
+          <li>Perhatikan LED menyala ketika rangkaian benar!</li>
+          <li>Klik "Periksa Solusi" setelah selesai</li>
+        </ol>
+      </div>
+
+      <div className="puzzle-area">
+        <div className="components-drawer">
+          <h3>Komponen Tersedia</h3>
+          <div className="components-list">
+            {availableComponents.map((component) => (
+              <button
+                key={component.id}
+                className={`component-item ${component.placed ? 'placed' : ''}`}
+                onClick={() => !component.placed && handleAddComponent(component)}
+                disabled={component.placed}
+              >
+                <div className="component-label">{component.label}</div>
+                {component.placed && <div className="placed-badge">Terpasang</div>}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <div className="circuit-canvas-container">
+          <ReactFlow
+            nodes={nodes}
+            edges={edges}
+            onNodesChange={onNodesChange}
+            onEdgesChange={onEdgesChange}
+            onConnect={onConnect}
+            onNodeDoubleClick={onNodeDoubleClick}
+            nodeTypes={nodeTypes}
+            fitView
+            className="circuit-canvas"
+          >
+            <Background color="#374151" gap={16} />
+            <Controls />
+            <MiniMap
+              nodeColor={(node) => {
+                if (simulation.litLEDs.has(node.id)) return '#fbbf24';
+                if (simulation.poweredNodes.has(node.id)) return '#10b981';
+                return '#6b7280';
+              }}
+            />
+          </ReactFlow>
+        </div>
+      </div>
+
+      <div className="puzzle-controls">
+        <button className="reset-button" onClick={handleReset}>
+          Reset
+        </button>
+
+        <button
+          className="hint-button"
+          onClick={handleRequestHint}
+          disabled={usedHints >= experiment.max_hints}
+        >
+          Hint ({usedHints}/{experiment.max_hints})
+        </button>
+
+        <button className="check-button" onClick={handleCheckSolution}>
+          Periksa Solusi
+        </button>
+      </div>
+
+      {currentHint && (
+        <div className="hint-display">
+          <div className="hint-icon">💡</div>
+          <div className="hint-text">{currentHint}</div>
+          <button className="hint-close" onClick={() => setCurrentHint(null)}>
+            ✕
+          </button>
+        </div>
+      )}
+
+      {showSuccess && (
+        <div className="success-overlay" onClick={handleCloseSuccess}>
+          <div className="success-card" onClick={(e) => e.stopPropagation()}>
+            <button className="success-close" onClick={handleCloseSuccess}>
+              ✕
+            </button>
+            <div className="success-icon">🎉</div>
+            <h2>Eksperimen Berhasil!</h2>
+            <p>Kamu telah menyelesaikan rangkaian dengan benar!</p>
+            <div className="success-stats">
+              <div>Hint Digunakan: {usedHints}/{experiment.max_hints}</div>
+              <div>XP yang Didapat: {experiment.base_xp - usedHints * 10}</div>
+            </div>
+            <div className="success-actions">
+              <button className="success-continue-btn" onClick={handleCloseSuccess}>
+                Lanjutkan
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default CircuitPuzzle
+export default CircuitPuzzle;
