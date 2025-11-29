@@ -70,17 +70,36 @@ function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
     });
   }, [nodes, simulation]);
 
+  const enrichedEdges = useMemo(() => {
+    return edges.map(edge => {
+      const hasCurrentFlow = simulation.currentFlowEdges.has(edge.id);
+      const flowDirection = simulation.currentFlowEdges.get(edge.id);
+
+      // Add arrow marker showing current flow from positive to negative
+      const markerEnd = hasCurrentFlow && flowDirection === 'forward'
+        ? { type: MarkerType.ArrowClosed, color: '#fbbf24' }
+        : undefined;
+
+      return {
+        ...edge,
+        animated: hasCurrentFlow,
+        style: {
+          ...edge.style,
+          stroke: hasCurrentFlow ? '#fbbf24' : '#6b7280',
+          strokeWidth: hasCurrentFlow ? 3 : 2
+        },
+        markerEnd
+      };
+    });
+  }, [edges, simulation]);
+
   const onConnect = useCallback(
     (params) => {
       const newEdge = {
         ...params,
         type: 'default',
         animated: true,
-        style: { stroke: '#fbbf24', strokeWidth: 3 },
-        markerEnd: {
-          type: MarkerType.ArrowClosed,
-          color: '#fbbf24'
-        }
+        style: { stroke: '#fbbf24', strokeWidth: 3 }
       };
       setEdges((eds) => addEdge(newEdge, eds));
     },
@@ -181,6 +200,20 @@ function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
     );
   }, [setNodes, setEdges]);
 
+  const onNodeContextMenu = useCallback((event, node) => {
+    event.preventDefault();
+    // Rotate/flip component polarity for polarized components
+    if (node.type === 'led' || node.type === 'battery') {
+      setNodes((nds) =>
+        nds.map((n) =>
+          n.id === node.id
+            ? { ...n, data: { ...n.data, flipped: !n.data.flipped } }
+            : n
+        )
+      );
+    }
+  }, [setNodes]);
+
   return (
     <div className="circuit-puzzle">
 
@@ -190,8 +223,10 @@ function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
           <li>Klik komponen dari panel kiri untuk menambahkannya ke canvas</li>
           <li>Drag komponen untuk memposisikannya</li>
           <li>Tarik dari handle (titik koneksi) satu komponen ke handle komponen lain untuk menghubungkan</li>
+          <li>Klik-kanan pada LED atau Battery untuk membalik polaritasnya (+/-)</li>
           <li>Double-click komponen untuk menghapusnya</li>
           <li>Perhatikan LED menyala ketika rangkaian benar!</li>
+          <li>Panah menunjukkan arah arus dari positif (+) ke negatif (-)</li>
           <li>Klik "Periksa Solusi" setelah selesai</li>
         </ol>
       </div>
@@ -217,11 +252,12 @@ function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
         <div className="circuit-canvas-container">
           <ReactFlow
             nodes={enrichedNodes}
-            edges={edges}
+            edges={enrichedEdges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
             onConnect={onConnect}
             onNodeDoubleClick={onNodeDoubleClick}
+            onNodeContextMenu={onNodeContextMenu}
             nodeTypes={nodeTypes}
             fitView
             className="circuit-canvas"

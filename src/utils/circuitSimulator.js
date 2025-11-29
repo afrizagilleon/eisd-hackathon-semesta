@@ -6,7 +6,8 @@ export function simulateCircuit(nodes, edges) {
     activeComponents: new Set(),
     isComplete: false,
     hasShortCircuit: false,
-    completePaths: []
+    completePaths: [],
+    currentFlowEdges: new Map() // Maps edge.id -> direction ('forward' or 'reverse')
   };
 
   const batteryNodes = nodes.filter(n => n.type === 'battery');
@@ -37,7 +38,7 @@ export function simulateCircuit(nodes, edges) {
   }
 
   // Trace all possible paths from battery positive to battery negative
-  function traceCircuit(currentNodeId, currentHandle, visitedEdges = new Set(), path = []) {
+  function traceCircuit(currentNodeId, currentHandle, visitedEdges = new Set(), path = [], edgePath = []) {
     const completePaths = [];
     const currentNode = nodeMap.get(currentNodeId);
 
@@ -63,6 +64,7 @@ export function simulateCircuit(nodes, edges) {
       if (!targetNode) continue;
 
       const normalizedTargetHandle = normalizeHandle(edge.targetHandle);
+      const newEdgePath = [...edgePath, { edgeId: edge.id, direction: 'forward' }];
 
       // Check if we've reached the battery negative terminal (complete circuit!)
       if (edge.target === battery.id && normalizedTargetHandle === 'negative') {
@@ -71,7 +73,7 @@ export function simulateCircuit(nodes, edges) {
           handle: 'negative',
           type: targetNode.type
         }];
-        completePaths.push(completePath);
+        completePaths.push({ path: completePath, edges: newEdgePath });
         continue;
       }
 
@@ -88,7 +90,8 @@ export function simulateCircuit(nodes, edges) {
           edge.target,
           nextHandle,
           newVisited,
-          newPath
+          newPath,
+          newEdgePath
         );
         completePaths.push(...subPaths);
       }
@@ -106,7 +109,15 @@ export function simulateCircuit(nodes, edges) {
     results.isComplete = true;
 
     // Mark all components in complete paths as powered/active
-    for (const path of allCompletePaths) {
+    for (const pathData of allCompletePaths) {
+      const path = pathData.path;
+      const edgePath = pathData.edges;
+
+      // Record current flow direction for each edge
+      for (const edgeInfo of edgePath) {
+        results.currentFlowEdges.set(edgeInfo.edgeId, edgeInfo.direction);
+      }
+
       for (const step of path) {
         results.poweredNodes.add(step.nodeId);
         results.activeComponents.add(step.nodeId);
@@ -139,12 +150,22 @@ export function simulateCircuit(nodes, edges) {
 export function validateCircuitSolution(nodes, edges, expectedSolution) {
   const simulation = simulateCircuit(nodes, edges);
 
+  // If no expected solution provided, just check if circuit is complete
   if (!expectedSolution) {
+    const isComplete = simulation.isComplete;
+    const hasLED = nodes.some(n => n.type === 'led');
+    const ledIsLit = simulation.litLEDs.size > 0;
+
+    // Success if circuit is complete and (no LED or LED is lit)
+    const isCorrect = isComplete && (!hasLED || ledIsLit);
+
     return {
-      isCorrect: simulation.isComplete && simulation.litLEDs.size > 0,
-      feedback: simulation.isComplete
-        ? 'Circuit is complete and LED is lit!'
-        : 'Circuit is not complete. Make sure to connect all components properly.',
+      isCorrect,
+      feedback: isCorrect
+        ? 'Perfect! Your circuit is correct and working as expected!'
+        : !isComplete
+        ? 'Circuit is not complete. Make sure to connect all components from battery positive to negative.'
+        : 'The LED should be lit. Check the polarity (anode = +, cathode = -).',
       simulation
     };
   }
@@ -160,6 +181,15 @@ export function validateCircuitSolution(nodes, edges, expectedSolution) {
     return {
       isCorrect: false,
       feedback: 'Not all required components are placed.',
+      simulation
+    };
+  }
+
+  // Check if circuit is complete (has a path from battery+ to battery-)
+  if (!simulation.isComplete) {
+    return {
+      isCorrect: false,
+      feedback: 'Circuit is not complete. Make sure to connect all components from battery positive to negative.',
       simulation
     };
   }
@@ -188,7 +218,7 @@ export function validateCircuitSolution(nodes, edges, expectedSolution) {
   if (shouldLightLED && !ledIsLit) {
     return {
       isCorrect: false,
-      feedback: 'The LED should be lit. Check your connections.',
+      feedback: 'The LED should be lit. Check your connections and LED polarity (anode = +, cathode = -).',
       simulation
     };
   }

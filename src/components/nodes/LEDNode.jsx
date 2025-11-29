@@ -2,33 +2,35 @@ import { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 
 function LEDNode({ data, selected }) {
+  const isFlipped = data.flipped || false;
+
   return (
-    <div className={`circuit-node led-node ${selected ? 'selected' : ''} ${data.isLit ? 'lit' : ''}`}>
+    <div className={`circuit-node led-node ${selected ? 'selected' : ''} ${data.isLit ? 'lit' : ''} ${isFlipped ? 'flipped' : ''}`}>
       {/* Anode - Input only (receives current) */}
       <Handle
         type="target"
-        position={Position.Left}
+        position={isFlipped ? Position.Right : Position.Left}
         id="anode"
         className="handle-anode"
         title="Anode (+)"
-        style={{ top: '50%', left: 0 }}
+        style={{ top: '50%', [isFlipped ? 'right' : 'left']: 0 }}
       />
       {/* Cathode - Bidirectional (outputs current, but can also receive connections) */}
       <Handle
         type="source"
-        position={Position.Right}
+        position={isFlipped ? Position.Left : Position.Right}
         id="cathode"
         className="handle-cathode"
         title="Cathode (-)"
-        style={{ top: '50%', right: 0 }}
+        style={{ top: '50%', [isFlipped ? 'left' : 'right']: 0 }}
       />
       <Handle
         type="target"
-        position={Position.Right}
+        position={isFlipped ? Position.Left : Position.Right}
         id="cathode-in"
         className="handle-cathode"
         title="Cathode (-)"
-        style={{ top: '50%', right: 0, opacity: 0 }}
+        style={{ top: '50%', [isFlipped ? 'left' : 'right']: 0, opacity: 0 }}
       />
       <div className="node-content">
         <div className={`led-bulb ${data.isLit ? 'glowing' : ''}`}>
@@ -41,8 +43,8 @@ function LEDNode({ data, selected }) {
             </>
           )}
         </div>
-        <div className="terminal-label anode-label">+</div>
-        <div className="terminal-label cathode-label">-</div>
+        <div className="terminal-label anode-label" style={{ [isFlipped ? 'right' : 'left']: '5px' }}>+</div>
+        <div className="terminal-label cathode-label" style={{ [isFlipped ? 'left' : 'right']: '5px' }}>-</div>
         <div className="node-label">{data.label || 'LED'}</div>
         <div className="node-value">{data.color || 'Red'}</div>
       </div>
