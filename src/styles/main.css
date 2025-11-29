@@ -173,7 +173,7 @@ body {
               0 0 180px rgba(255, 255, 240, 0.2),
               inset -20px -20px 40px rgba(180, 170, 150, 0.3);
   animation: moonGlow 4s ease-in-out infinite;
-  z-index: 20;
+  z-index: 3;
 }
 
 @keyframes moonGlow {
@@ -193,7 +193,7 @@ body {
 
 .haunted-house {
   position: relative;
-  z-index: 40;
+  z-index: 5;
   margin-bottom: 5rem;
   animation: houseFloatSlow 8s ease-in-out infinite;
 }
@@ -221,7 +221,7 @@ body {
   left: 0;
   width: 100vw;
   height: 350px;
-  z-index: 30;
+  z-index: 4;
   overflow: hidden;
 }
 
@@ -248,7 +248,7 @@ body {
   height: 100%;
   background: radial-gradient(ellipse at center, var(--fog-white) 0%, transparent 70%);
   opacity: 0.3;
-  z-index: 5;
+  z-index: 2;
   pointer-events: none;
 }
 
@@ -278,7 +278,7 @@ body {
   width: 100%;
   height: 100%;
   pointer-events: none;
-  z-index: 5;
+  z-index: 2;
   overflow: hidden;
 }
 
@@ -286,7 +286,7 @@ body {
   position: absolute;
   bottom: 2rem;
   left: 4rem;
-  z-index: 100;
+  z-index: 10;
   pointer-events: auto;
 }
 
