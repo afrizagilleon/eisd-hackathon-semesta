@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useMemo } from 'react';
 import ReactFlow, {
-  Background,
+  Background as FlowBackground,
   Controls,
   MiniMap,
   addEdge,
@@ -37,6 +37,10 @@ function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
   const [currentHint, setCurrentHint] = useState(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const [validationResult, setValidationResult] = useState(null);
+
+  if (!experiment) {
+    return <div className="circuit-puzzle">Loading experiment...</div>;
+  }
 
   useEffect(() => {
     if (experiment?.components) {
@@ -181,10 +185,6 @@ function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
 
   return (
     <div className="circuit-puzzle">
-      <div className="puzzle-header">
-        <h2>{experiment.title}</h2>
-        <p>{experiment.description}</p>
-      </div>
 
       <div className="puzzle-instructions">
         <h3>Cara Bermain:</h3>
@@ -228,7 +228,7 @@ function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
             fitView
             className="circuit-canvas"
           >
-            <Background color="#374151" gap={16} />
+            <FlowBackground color="#374151" gap={16} />
             <Controls />
             <MiniMap
               nodeColor={(node) => {

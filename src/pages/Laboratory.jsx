@@ -120,6 +120,20 @@ function Laboratory() {
     )
   }
 
+  if (!experiment) {
+    return (
+      <div className="laboratory-container">
+        <Background />
+        <div className="laboratory-content">
+          <div className="loading-section">
+            <div className="loading-spinner"></div>
+            <p className="loading-text">Memuat eksperimen...</p>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <div className="laboratory-container">
       <Background />
