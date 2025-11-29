@@ -4,19 +4,31 @@ import { Handle, Position } from 'reactflow';
 function LEDNode({ data, selected }) {
   return (
     <div className={`circuit-node led-node ${selected ? 'selected' : ''} ${data.isLit ? 'lit' : ''}`}>
+      {/* Anode - Input only (receives current) */}
       <Handle
         type="target"
         position={Position.Left}
         id="anode"
         className="handle-anode"
         title="Anode (+)"
+        style={{ top: '50%', left: 0 }}
       />
+      {/* Cathode - Bidirectional (outputs current, but can also receive connections) */}
       <Handle
         type="source"
         position={Position.Right}
         id="cathode"
         className="handle-cathode"
         title="Cathode (-)"
+        style={{ top: '50%', right: 0 }}
+      />
+      <Handle
+        type="target"
+        position={Position.Right}
+        id="cathode-in"
+        className="handle-cathode"
+        title="Cathode (-)"
+        style={{ top: '50%', right: 0, opacity: 0 }}
       />
       <div className="node-content">
         <div className={`led-bulb ${data.isLit ? 'glowing' : ''}`}>

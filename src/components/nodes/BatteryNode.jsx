@@ -12,7 +12,7 @@ function BatteryNode({ data, selected }) {
         title="Positive Terminal (+)"
       />
       <Handle
-        type="source"
+        type="target"
         position={Position.Left}
         id="negative"
         className="handle-negative"

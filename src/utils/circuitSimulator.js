@@ -5,7 +5,8 @@ export function simulateCircuit(nodes, edges) {
     litLEDs: new Set(),
     activeComponents: new Set(),
     isComplete: false,
-    hasShortCircuit: false
+    hasShortCircuit: false,
+    completePaths: []
   };
 
   const batteryNodes = nodes.filter(n => n.type === 'battery');
@@ -13,72 +14,123 @@ export function simulateCircuit(nodes, edges) {
     return results;
   }
 
-  function traceCircuit(startNodeId, startHandle, visitedEdges = new Set(), path = []) {
-    const paths = [];
-    const currentNode = nodeMap.get(startNodeId);
+  const battery = batteryNodes[0];
 
-    if (!currentNode) return paths;
+  // Normalize handle IDs (remove -out or -in suffix for bidirectional components)
+  function normalizeHandle(handleId) {
+    if (!handleId) return handleId;
+    return handleId.replace(/-(out|in)$/, '');
+  }
 
-    path.push({ nodeId: startNodeId, handle: startHandle });
-    results.poweredNodes.add(startNodeId);
+  // Helper function to get output handles based on input handle
+  function getOutputHandles(node, inputHandle) {
+    const normalized = normalizeHandle(inputHandle);
+    const outputMap = {
+      battery: { positive: [], negative: [] },
+      led: { anode: ['cathode'], cathode: [] }, // LED only allows current anode -> cathode
+      resistor: { pin1: ['pin2', 'pin2-out'], pin2: ['pin1', 'pin1-out'] }, // Bidirectional
+      switch: { pin1: ['pin2', 'pin2-out'], pin2: ['pin1', 'pin1-out'] }, // Bidirectional
+      wire: { end1: ['end2', 'end2-out'], end2: ['end1', 'end1-out'] } // Bidirectional
+    };
 
+    return outputMap[node.type]?.[normalized] || [];
+  }
+
+  // Trace all possible paths from battery positive to battery negative
+  function traceCircuit(currentNodeId, currentHandle, visitedEdges = new Set(), path = []) {
+    const completePaths = [];
+    const currentNode = nodeMap.get(currentNodeId);
+
+    if (!currentNode) return completePaths;
+
+    // Add current position to path (with normalized handle)
+    const normalizedHandle = normalizeHandle(currentHandle);
+    const currentStep = { nodeId: currentNodeId, handle: normalizedHandle, type: currentNode.type };
+    const newPath = [...path, currentStep];
+
+    // Find all outgoing edges from current handle (check both normalized and original)
     const outgoingEdges = edges.filter(edge =>
-      edge.source === startNodeId &&
-      edge.sourceHandle === startHandle &&
+      edge.source === currentNodeId &&
+      (normalizeHandle(edge.sourceHandle) === normalizedHandle) &&
       !visitedEdges.has(edge.id)
     );
 
     for (const edge of outgoingEdges) {
-      visitedEdges.add(edge.id);
+      const newVisited = new Set(visitedEdges);
+      newVisited.add(edge.id);
 
       const targetNode = nodeMap.get(edge.target);
       if (!targetNode) continue;
 
-      results.activeComponents.add(edge.target);
+      const normalizedTargetHandle = normalizeHandle(edge.targetHandle);
 
-      if (targetNode.type === 'led') {
-        results.litLEDs.add(edge.target);
-      }
-
-      if (targetNode.type === 'switch' && !targetNode.data.isClosed) {
+      // Check if we've reached the battery negative terminal (complete circuit!)
+      if (edge.target === battery.id && normalizedTargetHandle === 'negative') {
+        const completePath = [...newPath, {
+          nodeId: edge.target,
+          handle: 'negative',
+          type: targetNode.type
+        }];
+        completePaths.push(completePath);
         continue;
       }
 
-      const nextHandles = getOutputHandles(targetNode, edge.targetHandle);
+      // Handle switch - if open, current cannot flow through
+      if (targetNode.type === 'switch' && targetNode.data.isClosed === false) {
+        continue;
+      }
+
+      // Get the next possible handles from the target node
+      const nextHandles = getOutputHandles(targetNode, normalizedTargetHandle);
 
       for (const nextHandle of nextHandles) {
-        if (edge.target === batteryNodes[0].id && nextHandle === 'negative') {
-          paths.push([...path, { nodeId: edge.target, handle: nextHandle }]);
-          results.isComplete = true;
-        } else {
-          const subPaths = traceCircuit(
-            edge.target,
-            nextHandle,
-            new Set(visitedEdges),
-            [...path]
-          );
-          paths.push(...subPaths);
-        }
+        const subPaths = traceCircuit(
+          edge.target,
+          nextHandle,
+          newVisited,
+          newPath
+        );
+        completePaths.push(...subPaths);
       }
     }
 
-    return paths;
+    return completePaths;
   }
 
-  function getOutputHandles(node, inputHandle) {
-    const outputMap = {
-      battery: { positive: [], negative: [] },
-      led: { anode: ['cathode'] },
-      resistor: { pin1: ['pin2'], pin2: ['pin1'] },
-      switch: { pin1: ['pin2'], pin2: ['pin1'] },
-      wire: { end1: ['end2'], end2: ['end1'] }
-    };
+  // Start tracing from battery positive terminal
+  const allCompletePaths = traceCircuit(battery.id, 'positive');
+  results.completePaths = allCompletePaths;
 
-    return outputMap[node.type]?.[inputHandle] || [];
-  }
+  // If we found at least one complete path, mark the circuit as complete
+  if (allCompletePaths.length > 0) {
+    results.isComplete = true;
 
-  for (const battery of batteryNodes) {
-    traceCircuit(battery.id, 'positive');
+    // Mark all components in complete paths as powered/active
+    for (const path of allCompletePaths) {
+      for (const step of path) {
+        results.poweredNodes.add(step.nodeId);
+        results.activeComponents.add(step.nodeId);
+
+        // Check if LED should light up (must be in correct polarity)
+        if (step.type === 'led') {
+          // Find if current enters through anode in this path
+          const stepIndex = path.indexOf(step);
+          if (stepIndex > 0) {
+            const previousStep = path[stepIndex - 1];
+            // Find the edge connecting previous to current
+            const connectingEdge = edges.find(e =>
+              e.source === previousStep.nodeId &&
+              e.target === step.nodeId
+            );
+
+            // LED lights up only if current enters through anode
+            if (connectingEdge && normalizeHandle(connectingEdge.targetHandle) === 'anode') {
+              results.litLEDs.add(step.nodeId);
+            }
+          }
+        }
+      }
+    }
   }
 
   return results;
