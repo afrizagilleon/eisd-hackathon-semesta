@@ -86,7 +86,8 @@ function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
         style: {
           ...edge.style,
           stroke: hasCurrentFlow ? '#fbbf24' : '#6b7280',
-          strokeWidth: hasCurrentFlow ? 3 : 2
+          strokeWidth: hasCurrentFlow ? 3 : 2,
+          strokeDasharray: hasCurrentFlow ? '5, 5' : undefined
         },
         markerEnd
       };
