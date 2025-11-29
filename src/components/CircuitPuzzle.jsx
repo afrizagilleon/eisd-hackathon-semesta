@@ -19,6 +19,8 @@ import WireNode from './nodes/WireNode';
 
 import { simulateCircuit, validateCircuitSolution } from '../utils/circuitSimulator';
 
+let nodeIdCounter = 0;
+
 const nodeTypes = {
   battery: BatteryNode,
   led: LEDNode,
@@ -26,8 +28,6 @@ const nodeTypes = {
   switch: SwitchNode,
   wire: WireNode
 };
-
-let nodeIdCounter = 0;
 
 function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
@@ -53,11 +53,20 @@ function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
   }, [nodes, edges]);
 
   useEffect(() => {
+    if (nodes.length === 0) return;
+
     setNodes(currentNodes =>
       currentNodes.map(node => {
         const isLit = simulation.litLEDs.has(node.id);
         const isPowered = simulation.poweredNodes.has(node.id);
         const hasCurrent = simulation.activeComponents.has(node.id);
+
+        const needsUpdate =
+          (node.type === 'led' && node.data.isLit !== isLit) ||
+          (node.type === 'battery' && node.data.isPowered !== isPowered) ||
+          (node.data.hasCurrent !== hasCurrent);
+
+        if (!needsUpdate) return node;
 
         return {
           ...node,
@@ -70,7 +79,7 @@ function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
         };
       })
     );
-  }, [simulation, setNodes]);
+  }, [simulation.litLEDs, simulation.poweredNodes, simulation.activeComponents, nodes.length]);
 
   const onConnect = useCallback(
     (params) => {
