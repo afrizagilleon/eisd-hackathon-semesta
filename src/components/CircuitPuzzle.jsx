@@ -52,34 +52,23 @@ function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
     return simulateCircuit(nodes, edges);
   }, [nodes, edges]);
 
-  useEffect(() => {
-    if (nodes.length === 0) return;
+  const enrichedNodes = useMemo(() => {
+    return nodes.map(node => {
+      const isLit = simulation.litLEDs.has(node.id);
+      const isPowered = simulation.poweredNodes.has(node.id);
+      const hasCurrent = simulation.activeComponents.has(node.id);
 
-    setNodes(currentNodes =>
-      currentNodes.map(node => {
-        const isLit = simulation.litLEDs.has(node.id);
-        const isPowered = simulation.poweredNodes.has(node.id);
-        const hasCurrent = simulation.activeComponents.has(node.id);
-
-        const needsUpdate =
-          (node.type === 'led' && node.data.isLit !== isLit) ||
-          (node.type === 'battery' && node.data.isPowered !== isPowered) ||
-          (node.data.hasCurrent !== hasCurrent);
-
-        if (!needsUpdate) return node;
-
-        return {
-          ...node,
-          data: {
-            ...node.data,
-            isLit: node.type === 'led' ? isLit : node.data.isLit,
-            isPowered: node.type === 'battery' ? isPowered : node.data.isPowered,
-            hasCurrent: hasCurrent
-          }
-        };
-      })
-    );
-  }, [simulation.litLEDs, simulation.poweredNodes, simulation.activeComponents, nodes.length]);
+      return {
+        ...node,
+        data: {
+          ...node.data,
+          isLit: node.type === 'led' ? isLit : node.data.isLit,
+          isPowered: node.type === 'battery' ? isPowered : node.data.isPowered,
+          hasCurrent: hasCurrent
+        }
+      };
+    });
+  }, [nodes, simulation]);
 
   const onConnect = useCallback(
     (params) => {
@@ -227,7 +216,7 @@ function CircuitPuzzle({ experiment, onComplete, onHintRequest }) {
 
         <div className="circuit-canvas-container">
           <ReactFlow
-            nodes={nodes}
+            nodes={enrichedNodes}
             edges={edges}
             onNodesChange={onNodesChange}
             onEdgesChange={onEdgesChange}
